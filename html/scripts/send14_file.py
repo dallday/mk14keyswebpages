@@ -25,7 +25,10 @@
 # send14_file.py filename.hex 2
 #   uses the 'new' OS with the "0000 00" reset prompt
 # set the MK14_OS below to the default if no parameter is used.
-# 
+#
+# v1.4: updated to allow lower case as well as upper case in the file.
+#     also added extra details to the error messages to say what line had failed.
+#  David Allday Dec 2021
 #---------------------------------------------------------------------------------------------------
 
 import sys
