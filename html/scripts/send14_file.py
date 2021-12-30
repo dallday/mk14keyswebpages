@@ -59,6 +59,7 @@ def SendFileToMK14(FileName):
     # If an error occurs during the load process
     ErrorFlag=0
 
+    LineNumber=0
     # Open the file
     with open(FileName) as fileobj:
 
@@ -68,13 +69,19 @@ def SendFileToMK14(FileName):
 
         print ("Sending... ")
 
-        for line in fileobj:
+        for lineraw in fileobj:
+           # allow reports to say what line failed
+           LineNumber += 1
+
+           # convert line to upper case
+           line = lineraw.upper()
 
            # Check for Intel Hex Line start character
            # If not, declare file invalid and exit
 
            if (line [0]!=":"):
                 ErrorFlag=1
+                print ("Line ", LineNumber, " does not start with :")
                 print ("Invalid Hex File")
                 break
            else:
@@ -140,13 +147,13 @@ def SendFileToMK14(FileName):
                            # Further check: if the start address of this line is
                            # FFFE = a 'run address' line...
                        if (AddressDigitsString=="FFFE") & (DataBytesCount > 1):
-                           ExecutionAddressHiString=line[9:11] 
+                           ExecutionAddressHiString=line[9:11]
                            ExecutionAddressLoString=line[11:13]
                            ExecuteFlag=1 # Execution address was found
                            OutputMode=0  # Validate line but do not send it
                        else:
                            # change to address entry mode. Key depends on
-                           # whether the OS is old or new version. 
+                           # whether the OS is old or new version.
 
                            if MK14_OS==1:
                                Press_MK14_Key('m')  # Old OS: Press Mem
@@ -218,7 +225,7 @@ def SendFileToMK14(FileName):
 
                    # Check whether it is valid, if not, abort
                    if LineChecksumString!=ChkSumHexString:
-                       print ("Invalid Checksum in file.")
+                       print ("Invalid Checksum in file line ", LineNumber, ",  found ", LineChecksumString, " expected " , ChkSumHexString )
                        ErrorFlag=1
                        break
 
